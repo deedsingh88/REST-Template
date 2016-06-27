@@ -24,12 +24,16 @@ public class RESTClient {
 
 	}
 	
-	public RESTClient(String baseURI,String appContext,String restContext,String resource) {
+	/**
+	 * This constructor is used to configure Test client and is meant to use with Grizly 
+	 * server.
+	 * @param baseURI
+	 * @param resource
+	 */
+	public RESTClient(String baseURI,String resource) {
 		Client client = ClientBuilder.newClient();
-		//System.out.println(baseURI+ "/"+appContext+"/"+restContext+"/"+resource);
-		
-		user = client.target(baseURI+ "/"+appContext+"/"+resource);
-		System.out.println("Target url deed "+user.getUri());
+		user = client.target(baseURI+"/"+resource);
+
 
 	}
 
@@ -58,15 +62,15 @@ public class RESTClient {
 	public String deleteUser(String uid) {
 		WebTarget path = user.path("/" + uid);
 		Response response = path.request().delete();
-		String entity = response.readEntity(String.class);
+		String entity = String.valueOf(response.getStatus());
 		return entity;
 
 	}
 
 	public String getUsers() {
 		Response response = user.request().get();
-		//String entity = response.readEntity(String.class);
-		String entity = String.valueOf(response.getStatus());
+		String entity = response.readEntity(String.class);
+		//String entity = String.valueOf(response.getStatus());
 		return entity;
 
 	}

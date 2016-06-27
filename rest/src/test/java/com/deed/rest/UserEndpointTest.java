@@ -6,7 +6,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.Connection;
@@ -16,7 +19,10 @@ import org.glassfish.grizzly.http.server.HttpServerProbe;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,25 +30,17 @@ import com.deed.rest.client.RESTClient;
 import com.deed.rest.endpoints.UserEndpoint;
 import com.deed.rest.model.User;
 
-public class UserEndpointTest {
-
-
+public class UserEndpointTest   {
 	
-	 /** end point for read queries */
-    private WebTarget UserTarget;
-
-    /** end point to supply updates */
-    private WebTarget collect;
-	private static final String BASE_URL = "http://localhost:8080";
-	private static final String WEB_CONTEXT = "rest-template";
-	private static final String REST_CONTEXT = "service";
+	public static final URI BASE_URI = UriBuilder.fromUri("http://localhost").port(8080).build();
 	private static final String RESOURCE = "User";
     private static final Logger log = Logger.getLogger(UserEndpointTest.class);
     static HttpServer server = null;
 	private RESTClient client = null;
+	  private WebTarget target;
 	
 	public UserEndpointTest(){
-		RESTClient client = new RESTClient(BASE_URL,WEB_CONTEXT,REST_CONTEXT,RESOURCE);
+		RESTClient client = new RESTClient(BASE_URI.toString(),RESOURCE);
         this.client=client;
 		/* create a new user */
 		// String responseString = client.createUser(new
@@ -66,60 +64,72 @@ public class UserEndpointTest {
       
 	}
 	
-	@BeforeClass
-    public static void  setUp() throws Exception {
-		log.info("Starting local testing server: " + BASE_URL);
-		log.info("Not for production use");
 
-		final ResourceConfig resourceConfig = new ResourceConfig();
-		resourceConfig.register(UserEndpoint.class);
-        
-		server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
+	    @BeforeClass
+	    public static void setUp() throws Exception {
+            
+	    	final ResourceConfig resourceConfig = new ResourceConfig();
+			resourceConfig.register(UserEndpoint.class);
+	        server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, resourceConfig,false);
+	        server.start();
+	        log.info("Grizly server started at : " + BASE_URI);
+			log.info("Not for production use");
+	      
+	    }
 
-		HttpServerProbe probe = new HttpServerProbe.Adapter() {
-		    public void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
-		        //System.out.println(request.getRequestURI());
-		    }
-		};
+	    @AfterClass
+	    public static void tearDown() throws Exception {
+	    	log.info("Shutting down the server ... ");
+	        server.shutdownNow();
+	    }
 
-		server.getServerConfiguration().getMonitoringConfig().getWebServerConfig().addProbes(probe);
-		server.start();
-		 log.info(format(" Server started.\n url=%s\n", BASE_URL));  
-
-	}
-	
 
 	
 	@Test
-    public void createTest() {
-		log.info("Create Response "+client.createUser(new User("shahbeg","shaheen","begum")));
-		log.info("Get all Response "+client.getUsers());
-		log.info("Update Response "+client.updateUser(new User("shahbeg","shaheen","begum")));
-		log.info("Get Response "+client.getUser("shahbeg"));
-		log.info("Delete Response "+client.deleteUser("shahbeg"));
-		
+    public void createTest() {	
 		String response = client.createUser(new User("shahbeg","shaheen","begum"));
-		System.out.println(response);
 		assertEquals("{\"username\":\"shahbeg\",\"firstname\":\"shaheen\",\"lastname\":\"begum\"}",response );
 		
     }
+	
+	@Test
+    public void updateTest() {
+		// first we will create a user
+		String response = client.createUser(new User("shahbeg","shaheen","begum"));
+		assertEquals("{\"username\":\"shahbeg\",\"firstname\":\"shaheen\",\"lastname\":\"begum\"}",response );
+		response = client.updateUser(new User("shahbeg","shaheen1","begum"));
+		System.out.println(response);
+		assertEquals("{\"username\":\"shahbeg\",\"firstname\":\"shaheen1\",\"lastname\":\"begum\"}",response );
+		
+    }
+	
+	
     
 	@Test
-    public void getUsers() {
+    public void readUsers() {
 		String response = client.getUsers();
 		System.out.println(response);
-		assertEquals("{\"username\":\"shahbeg\",\"firstname\":\"shaheen\",\"lastname\":\"begum\"}",response );
+		assert(response!=null&&response.contains("\"username\":\"deedsing\""));
 		
     }
 	
-	 @AfterClass
-    public static void tearDown() throws Exception {
-		log.info("Shuting down the server: " + BASE_URL);
-		log.info("Not for production use");
-        server.shutdownNow();
+	@Test
+    public void readUser() {
+		String response = client.getUser("shahbeg");
+		System.out.println(response);
+		assert(response!=null&&response.contains("\"username\":\"shahbeg\""));
+		
+    }
+	
+	@Test
+    public void deleteUsers() {
+		String response = client.createUser(new User("shahbeg","shaheen","begum"));
+		assertEquals("{\"username\":\"shahbeg\",\"firstname\":\"shaheen\",\"lastname\":\"begum\"}",response );
+		String responseCode = client.deleteUser("shahbeg");
+		assertEquals("200",responseCode );
+		
     }
 
-  
 	
 
 }
