@@ -1,5 +1,15 @@
+
+README
+----------------------
+This is a REST template which demonstrate CRUD operations for a User object.
+It also has JUNIT test cases and a REST client which can be used to invoke the service.
+
+----------------------
 Replace the server and port number
+----------------------
+
 GET all user http://localhost:8080/rest-template/service/User
+----------------------
 
 JSON response :
 {
@@ -21,6 +31,7 @@ JSON response :
 }
 
 GET a user http://localhost:8080/rest-template/service/User/deedsing
+----------------------
 
 JSON response :
 {
@@ -30,6 +41,7 @@ JSON response :
 }
 
 PUT update User GET a user http://localhost:8080/rest-template/service
+----------------------
 
 JSON request :
 {
@@ -39,6 +51,7 @@ JSON request :
 }
 
 JSON response :
+----------------------
 {
   "username": "deedsing",
   "firstname": "DeedSingh",
@@ -46,6 +59,7 @@ JSON response :
 }
 
 POST create a new user http://localhost:8080/rest-template/service/
+----------------------
 
 JSON request :
 {
@@ -62,8 +76,11 @@ JSON response :
 }
 
 DELETE a user http://localhost:8080/rest-template/service/User/deedsing
+----------------------
 JSON response : HTTP OK
+
 Error Messages
+----------------------
 
 {
   "error": "NOT_FOUND",
