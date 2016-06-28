@@ -15,9 +15,16 @@ import com.deed.rest.model.ErrorResponse;
 import com.deed.rest.model.User;
 import com.deed.rest.model.UserData;
 
-
+/**
+ * <h1>UserEndpoint</h1>
+ * <p>A REST service endpoint.
+ * REST implementation demonstrating CRUD operations for a {@link User} User object.
+ * </p>
+ * @author deedsing
+ *
+ */
 @Path("/User")
-public class UserEndpoint {
+public class UserEndpoint  implements UserI{
 
     
 	
@@ -81,12 +88,12 @@ public class UserEndpoint {
             return Response.ok(user).build();
         	}else
         		return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse("NOT_FOUND","User "+user+" does not exist ")).build();
-        }     
+        }
 
-    public static void main(String[] args) {
-		System.out.println(new User("deedsing","Deed","Singh").toString());
-	}
 
+	  
+
+   
     
 }
 

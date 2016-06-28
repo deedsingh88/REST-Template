@@ -12,6 +12,9 @@ import com.deed.rest.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+/**
+ * Client to call rest endpoint and capture response.
+ * */
 public class RESTClient {
 
 	private static final String BASE_URI = "http://localhost:8080";
@@ -77,7 +80,7 @@ public class RESTClient {
 
 	/**
 	 * The method demonstrate how to use this client to perform CRUD operations on running instance of REST service.
-	 * Please uncomment and change base URI , to use this client in accordance to your setup.
+	 * Please uncomment and change base URI , to use this client as per the application  setup.
 	 * @param args
 	 */
 	public static void main(String[] args) {

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * <h1>User</h1>
  * <p>In memory data store for the users.
- * I am making an assumption that users are unique
+ * We are making an assumption that users are unique
  * </p>
  * 
  *
