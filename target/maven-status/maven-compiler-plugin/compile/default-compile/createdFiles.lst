@@ -1,0 +1,6 @@
+com\deed\rest\model\ErrorResponse.class
+com\deed\rest\client\RESTClient.class
+com\deed\rest\model\User.class
+com\deed\rest\endpoints\UserEndpoint.class
+com\deed\rest\endpoints\UserI.class
+com\deed\rest\model\UserData.class
